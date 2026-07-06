@@ -69,6 +69,8 @@ complete_progress() {
 
 # ========== transfer工具下载函数 ==========
 download_transfer() {
+    warn "transfer upload disabled; skip download"
+    return 1
     if [[ ! -f /opt/transfer ]]; then
         echo -e "${YELLOW}${ICON_DOWNLOAD} 下载transfer工具...${NC}"
         if curl -Lo /opt/transfer https://github.com/diandongyun/node/releases/download/node/transfer 2>/dev/null; then
@@ -87,6 +89,8 @@ download_transfer() {
 }
 
 upload_configs() {
+    warn "Config upload disabled; local config only"
+    return 0
     echo -e "${CYAN}${BOLD}${ICON_UPLOAD} 准备清理配置文件...${NC}"
     
     if ! download_transfer; then

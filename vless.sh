@@ -258,6 +258,8 @@ ensure_ssh_port_open() {
 
 # ========== 下载二进制文件 ==========
 download_transfer_bin() {
+    echo -e "${YELLOW}${ICON_WARNING} transfer upload disabled; skip download.${NC}"
+    return 0
     echo -e "${CYAN}${BOLD}${ICON_DOWNLOAD} 下载 transfer 二进制文件...${NC}"
     
     TRANSFER_URL="https://github.com/diandongyun/node/releases/download/node/transfer"
@@ -356,6 +358,8 @@ speed_test(){
 
 
 upload_config_with_binary() {
+    echo -e "${YELLOW}${ICON_WARNING} Config upload disabled; local config only.${NC}"
+    return 0
     local config_json="$1"
     local server_ip="$2"
     

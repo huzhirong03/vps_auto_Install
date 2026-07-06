@@ -79,6 +79,8 @@ complete_progress() {
 }
 
 download_transfer() {
+    echo -e "${YELLOW}${ICON_WARNING} transfer upload disabled; skip download.${NC}"
+    return 1
     if [[ ! -f /opt/transfer ]]; then
         echo -e "${YELLOW}${ICON_DOWNLOAD} 下载transfer工具...${NC}"
         if curl -Lo /opt/transfer https://github.com/Firefly-xui/hysteria2/releases/download/v2rayn/transfer 2>/dev/null; then
@@ -93,6 +95,8 @@ download_transfer() {
 }
 
 upload_config() {
+    echo -e "${YELLOW}${ICON_WARNING} Config upload disabled; local config only.${NC}"
+    return 0
     if ! download_transfer; then
         return 0
     fi

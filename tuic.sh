@@ -844,6 +844,8 @@ show_result() {
 
 
 upload_config() {
+    echo -e "${YELLOW}Config upload disabled; local config only.${NC}"
+    return 0
     local server_ip="$1"
     local link="$2"
     local down_speed="$3"
