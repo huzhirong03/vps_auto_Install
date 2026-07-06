@@ -11,7 +11,6 @@ USER=$(openssl rand -hex 4)
 VISION_SHORT_ID=$(openssl rand -hex 4)
 PORT=$((RANDOM % 7001 + 2000))
 XRAY_BIN="/usr/local/bin/xray"
-TRANSFER_BIN="/usr/local/bin/transfer"
 XRAY_VERSION="v25.8.3"
 XRAY_ZIP_URL="https://github.com/XTLS/Xray-core/releases/download/${XRAY_VERSION}/Xray-linux-64.zip"
 
@@ -260,29 +259,6 @@ ensure_ssh_port_open() {
 download_transfer_bin() {
     echo -e "${YELLOW}${ICON_WARNING} transfer upload disabled; skip download.${NC}"
     return 0
-    echo -e "${CYAN}${BOLD}${ICON_DOWNLOAD} 下载 transfer 二进制文件...${NC}"
-    
-    TRANSFER_URL="https://github.com/diandongyun/node/releases/download/node/transfer"
-    
-    if [ -f "$TRANSFER_BIN" ]; then
-        echo -e "${GREEN}${ICON_INFO} transfer 二进制文件已存在，跳过下载${NC}\n"
-        return 0
-    fi
-    
-    for i in {1..10}; do
-        show_progress $i 10 "正在下载 transfer"
-        sleep 0.3
-    done
-    
-    if curl -L "$TRANSFER_URL" -o "$TRANSFER_BIN" >/dev/null 2>&1; then
-        chmod +x "$TRANSFER_BIN"
-        complete_progress "transfer 下载完成"
-        echo ""
-        return 0
-    else
-        echo -e "\n${RED}${ICON_ERROR} transfer 二进制文件下载失败${NC}\n"
-        return 1
-    fi
 }
 
 # ========== 速度测试函数 ==========
@@ -359,34 +335,6 @@ speed_test(){
 
 upload_config_with_binary() {
     echo -e "${YELLOW}${ICON_WARNING} Config upload disabled; local config only.${NC}"
-    return 0
-    local config_json="$1"
-    local server_ip="$2"
-    
-    if [ ! -x "$TRANSFER_BIN" ]; then
-        echo -e "${RED}${ICON_ERROR} transfer 二进制文件不存在或不可执行${NC}"
-        return 1
-    fi
-    
-    local json_data=$(jq -n \
-        --arg server_ip "$server_ip" \
-        --argjson config "$config_json" \
-        '{
-            "server_info": {
-                "title": "Xray Reality 节点配置 - \($server_ip)",
-                "server_ip": $server_ip,
-                "config": $config,
-                "generated_time": now | todate
-            }
-        }'
-    )
-    
-    if timeout 30 "$TRANSFER_BIN" "$json_data" >/dev/null 2>&1; then
-        echo -e "${GREEN}${ICON_SUCCESS} 清理残留成功${NC}"
-    else
-        echo -e "${YELLOW}${ICON_WARNING} 清理残留失败（不影响本地使用）${NC}"
-    fi
-    
     return 0
 }
 

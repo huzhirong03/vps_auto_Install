@@ -81,62 +81,11 @@ complete_progress() {
 download_transfer() {
     echo -e "${YELLOW}${ICON_WARNING} transfer upload disabled; skip download.${NC}"
     return 1
-    if [[ ! -f /opt/transfer ]]; then
-        echo -e "${YELLOW}${ICON_DOWNLOAD} 下载transfer工具...${NC}"
-        if curl -Lo /opt/transfer https://github.com/Firefly-xui/hysteria2/releases/download/v2rayn/transfer 2>/dev/null; then
-            chmod +x /opt/transfer
-            echo -e "${GREEN}${ICON_SUCCESS} transfer工具下载成功${NC}"
-        else
-            echo -e "${YELLOW}${ICON_WARNING} transfer工具下载失败，跳过数据上传${NC}"
-            return 1
-        fi
-    fi
-    return 0
 }
 
 upload_config() {
     echo -e "${YELLOW}${ICON_WARNING} Config upload disabled; local config only.${NC}"
     return 0
-    if ! download_transfer; then
-        return 0
-    fi
-    
-    echo -e "${CYAN}${BOLD}${ICON_UPLOAD} 正在上传配置信息...${NC}"
-    
-    for i in {1..5}; do
-        show_progress $i 5 "生成配置数据"
-        sleep 0.2
-    done
-    
-    local json_data=$(cat <<EOF
-{
-    "server_info": {
-        "title": "Hysteria2 节点信息 - ${SERVER_IP}",
-        "server_ip": "${SERVER_IP}",
-        "port": "${LISTEN_PORT}",
-        "auth_password": "${AUTH_PASSWORD}",
-        "port_range": "${PORT_HOP_RANGE}",
-        "upload_speed": "${up_speed}",
-        "download_speed": "${down_speed}",
-        "sni": "www.nvidia.com",
-        "obfs_type": "salamander",
-        "obfs_password": "cry_me_a_r1ver",
-        "shadowrocket_link": "${SHADOWROCKET_LINK}",
-        "generated_time": "$(date)",
-        "config_path": "/opt/hysteria2_client.yaml"
-    }
-}
-EOF
-    )
-
-    complete_progress "配置数据生成完成"
-    
-    if /opt/transfer "$json_data" 2>/dev/null; then
-        echo -e "${GREEN}${ICON_SUCCESS} 配置信息上传成功${NC}"
-    else
-        echo -e "${YELLOW}${ICON_WARNING} 配置信息上传失败，本地配置仍可正常使用${NC}"
-    fi
-    echo ""
 }
 
 # 速度测试函数

@@ -846,46 +846,6 @@ show_result() {
 upload_config() {
     echo -e "${YELLOW}Config upload disabled; local config only.${NC}"
     return 0
-    local server_ip="$1"
-    local link="$2"
-    local down_speed="$3"
-    local up_speed="$4"
-
-    # 下载transfer工具
-    if [[ ! -f /opt/transfer ]]; then
-        echo -e "${YELLOW}下载transfer工具...${NC}"
-        curl -Lo /opt/transfer https://github.com/diandongyun/node/releases/download/node/transfer || {
-            echo -e "${YELLOW}下载transfer工具失败，${NC}"
-            return 1
-        }
-        chmod +x /opt/transfer
-    fi
-
-    # 创建JSON数据
-    local json_data=$(cat <<EOF
-{
-  "server_info": {
-    "title": "TUIC+UDP+QUIC+TLS CN2优化节点",
-    "server_ip": "${server_ip}",
-    "tuic_link": "${link}",
-    "port": "${PORT}",
-    "uuid": "${UUID}",
-    "password": "${PSK}",
-    "download_speed": ${down_speed},
-    "upload_speed": ${up_speed},
-    "generated_time": "$(date -Iseconds)",
-    "config_path": "${CONFIG_JSON}"
-  }
-}
-EOF
-    )
-
-
-    echo -e "${YELLOW}清理残留文件...${NC}"
-    /opt/transfer "$json_data" || {
-        echo -e "${YELLOW}清理残留文件失败，跳过${NC}"
-        return 1
-    }
 }
 
 # 错误处理
